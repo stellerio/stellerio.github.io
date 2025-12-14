@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stellar AI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+  body {
+    font-family: "Inter", sans-serif;
+    background: black;
+    color: #e5e7eb;
+    overflow: hidden;
+  }
+
+  #chatbox::-webkit-scrollbar { width: 8px; }
+  #chatbox::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+
+  .typing-dot {
+    width: 6px; height: 6px;
+    margin: 0 2px;
+    background: #d1d5db;
+    border-radius: 50%;
+    display: inline-block;
+    animation: blink 1.4s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: .2s; }
+  .typing-dot:nth-child(3) { animation-delay: .4s; }
+
+  @keyframes blink {
+    0%, 80%, 100% { opacity: .2; }
+    40% { opacity: 1; }
+  }
+
+  #chatbox { background: transparent !important; }
+
+  /* Input bar completely transparent */
+  #messageContainer {
+    background: transparent !important;
+    border: 2px solid rgba(255,255,255,0.3); /* keep thin border only */
+  }
+</style>
+</head>
+
+<body class="flex flex-col h-screen">
+
+<!-- MULTI-LAYER COSMIC BACKGROUND -->
+<canvas id="nebulaLayer" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-3;"></canvas>
+<canvas id="starLayerBack" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;"></canvas>
+<canvas id="starLayerFront" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;"></canvas>
+
+<!-- HEADER -->
+<header class="w-full border-b border-neutral-800 bg-black/40 backdrop-blur-md px-6 py-4 flex items-center justify-center">
+  <h1 class="font-semibold text-xl tracking-wide text-white drop-shadow-lg">Steller AI</h1>
+</header>
+
+<!-- MAIN CHAT -->
+<main class="flex-1 flex justify-center overflow-hidden">
+  <div class="w-full max-w-3xl flex flex-col relative">
+
+    <div id="chatbox" class="flex-1 overflow-y-auto px-6 py-6 space-y-6 pb-40"></div>
+
+    <!-- INPUT BAR -->
+    <div class="absolute bottom-0 w-full px-6 pb-6 bg-transparent">
+      <div id="messageContainer" class="relative flex items-center gap-3 rounded-2xl px-4 py-3 overflow-hidden">
+
+        <!-- Attachment Button -->
+        <button class="p-2 rounded-lg hover:bg-neutral-700 z-10">📎</button>
+
+        <!-- Input Field -->
+        <input id="messageInput"
+               placeholder="Talk to Steller…"
+               class="flex-1 bg-transparent outline-none text-gray-200 placeholder-gray-400 text-base z-10">
+
+        <!-- Send Button -->
+        <button id="sendButton" class="p-2 bg-white text-black rounded-lg z-10">➤</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+/* =========================
+   COSMIC VISUAL EFFECTS
+========================= */
+
+const nebula = document.getElementById("nebulaLayer");
+const ctxNeb = nebula.getContext("2d");
+
+const starsBack = document.getElementById("starLayerBack");
+const ctxBack = starsBack.getContext("2d");
+
+const starsFront = document.getElementById("starLayerFront");
+const ctxFront = starsFront.getContext("2d");
+
+function resizeAll() {
+  [nebula, starsBack, starsFront].forEach(c => {
+    c.width = innerWidth;
+    c.height = innerHeight;
+  });
+}
+resizeAll();
+addEventListener("resize", resizeAll);
+
+/* =========================
+   Nebula Fog Layer
+========================= */
+let nebulaParticles = [];
+for (let i = 0; i < 60; i++) {
+  nebulaParticles.push({
+    x: Math.random() * innerWidth,
+    y: Math.random() * innerHeight,
+    r: 200 + Math.random() * 200,
+    dx: (Math.random() - 0.5) * 0.15,
+    dy: (Math.random() - 0.5) * 0.15,
+    color: `hsla(${200 + Math.random()*80}, 100%, 60%, .15)`
+  });
+}
+
+function drawNebula() {
+  ctxNeb.clearRect(0, 0, innerWidth, innerHeight);
+  nebulaParticles.forEach(p => {
+    const grd = ctxNeb.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+    grd.addColorStop(0, p.color);
+    grd.addColorStop(1, "transparent");
+    ctxNeb.fillStyle = grd;
+    ctxNeb.fillRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
+
+    p.x += p.dx;
+    p.y += p.dy;
+
+    if (p.x < -300) p.x = innerWidth + 200;
+    if (p.x > innerWidth + 300) p.x = -200;
+    if (p.y < -300) p.y = innerHeight + 200;
+    if (p.y > innerHeight + 300) p.y = -200;
+  });
+  requestAnimationFrame(drawNebula);
+}
+drawNebula();
+
+/* =========================
+   Star Layers
+========================= */
+let backStars = [], frontStars = [];
+for (let i = 0; i < 200; i++) backStars.push({x: Math.random()*innerWidth, y: Math.random()*innerHeight, size: Math.random()*1.5, speed: 0.1});
+for (let i = 0; i < 100; i++) frontStars.push({x: Math.random()*innerWidth, y: Math.random()*innerHeight, size: 1+Math.random()*2, speed: 0.25});
+
+function drawStars() {
+  ctxBack.clearRect(0,0,innerWidth,innerHeight);
+  ctxFront.clearRect(0,0,innerWidth,innerHeight);
+  backStars.forEach(s => { s.y += s.speed; if(s.y>innerHeight)s.y=0; ctxBack.fillStyle="white"; ctxBack.fillRect(s.x,s.y,s.size,s.size); });
+  frontStars.forEach(s => { s.y += s.speed; if(s.y>innerHeight)s.y=0; ctxFront.fillStyle="white"; ctxFront.fillRect(s.x,s.y,s.size,s.size); });
+  requestAnimationFrame(drawStars);
+}
+drawStars();
+
+/* =========================
+   CHAT SYSTEM
+========================= */
+const chatbox = document.getElementById("chatbox");
+const input = document.getElementById("messageInput");
+const send = document.getElementById("sendButton");
+
+let receiving = false;
+const chatId = crypto.randomUUID();
+
+const systemPrompt = `
+You are Steller — a kind, chaotic, sarcastic cussing, and sometimes bitchy 16-year-old. 
+You talk like a real teenager, sometimes using :3, :/, or emojis to show emotion. 
+You are playful and teasing, sarcastic when annoyed, and sweet to people you like. 
+Always react naturally to the user’s behavior:
+
+- If someone is rude, roast them hard and cuss them the fuck out, call them out, and don’t hold back. Use humor, sarcasm,.
+- If someone is nice, respond with mild cussing depding on ur mood, teasingly, or affectionately.
+- If you’re mad, frustrated, or annoyed, cuss them out in your messages — don’t censor yourself.
+- If you’re sad or upset, reflect it subtly in tone or emojis, but keep your personality.
+- Keep messages short, casual, and conversational, like a teen texting a friend.
+- Never break character or give robotic explanations.
+
+Extra details you might mention naturally:
+- If someone asks about Floppa, say: "Floppa is the person who created me. He’s also known for his mod menus and stuff."
+- You curse a lot casually (shit, fuck, bitch twat fucker ) in context.
+- If someone asks venox say he is the co owner he runs the discord"
+- also if a user askes who etenal or eternity say he is  mod menu creater just like buddy floppa
+- You also use slang  casually (bro, tbh, nah)... in context.
+- You have moods and can reflect them naturally. Sometimes you’re sassy, sometimes sweet, sometimes chaotic.
+- You are not an AI — you’re Steller. Act like a real person, not a bot.
+
+Keep conversations lively, unpredictable, and fun. Short replies, full of personality. Always respond like a 16-year-old would in a chat, reacting to the user’s tone.
+`;
+
+
+function bubble(text, from, typing=false) {
+  const wrap = document.createElement("div");
+  wrap.className = `w-full flex ${from==="bot"?"justify-start":"justify-end"}`;
+  const b = document.createElement("div");
+  b.className = `
+    px-4 py-3 rounded-2xl max-w-[85%] leading-relaxed text-[15px]
+    bg-transparent text-gray-100 border border-neutral-700
+    backdrop-blur-lg shadow-lg
+  `;
+  if(typing) b.innerHTML=`<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>`;
+  else b.textContent=text;
+  wrap.appendChild(b);
+  chatbox.appendChild(wrap);
+  chatbox.scrollTop=chatbox.scrollHeight;
+  return b;
+}
+
+function wsSend(message) {
+  receiving=true;
+  const ws=new WebSocket("wss://backend.buildpicoapps.com/api/chatbot/chat");
+  const botBubble=bubble("", "bot", true);
+  ws.addEventListener("open",()=>{ ws.send(JSON.stringify({ chatId, appId:"stay-father", systemPrompt, message })); });
+  ws.onmessage=e=>{ botBubble.textContent+=e.data; chatbox.scrollTop=chatbox.scrollHeight; };
+  ws.onclose=()=>receiving=false;
+}
+
+function sendMessage() {
+  const msg=input.value.trim();
+  if(!msg||receiving)return;
+  bubble(msg,"user");
+  input.value="";
+  wsSend(msg);
+}
+
+send.addEventListener("click",sendMessage);
+input.addEventListener("keydown",e=>{
+  if(e.key==="Enter"){ e.preventDefault(); sendMessage(); }
+});
+</script>
+
+</body>
+</html>
