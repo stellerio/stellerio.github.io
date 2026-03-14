@@ -7,397 +7,142 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #000000;
-    --surface: #0a0a0a;
+    --bg: #000;
     --border: #1a1a1a;
-    --accent: #ffffff;
-    --accent-dim: rgba(255,255,255,0.08);
-    --text: #ffffff;
-    --text-muted: #666;
-    --user-bg: #111111;
+    --text: #fff;
+    --muted: #555;
+    --user-bg: #111;
     --user-border: #2a2a2a;
     --input-bg: #0d0d0d;
     --input-border: #2a2a2a;
-    --glow: rgba(255,255,255,0.03);
   }
-
-  html, body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    overflow: hidden;
-  }
-
-  /* COSMIC BG */
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; overflow: hidden; }
   canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-  #nebulaLayer { z-index: 0; }
-  #starLayerBack { z-index: 1; }
-  #starLayerFront { z-index: 2; }
-
-  /* LAYOUT */
-  #app {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
-
-  /* HEADER */
+  #c0 { z-index: 0; } #c1 { z-index: 1; } #c2 { z-index: 2; }
+  #app { position: relative; z-index: 10; display: flex; flex-direction: column; height: 100vh; }
   header {
-    padding: 18px 28px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(20px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    padding: 18px 28px; border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(20px);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-
-  header h1 {
-    font-family: 'Space Mono', monospace;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--text);
-  }
-
-  header h1 span {
-    color: var(--text-muted);
-  }
-
-  /* CHATBOX */
+  header h1 { font-family: 'Space Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: .35em; text-transform: uppercase; }
+  header h1 span { color: var(--muted); }
   #chatbox {
-    flex: 1;
-    overflow-y: auto;
-    padding: 40px 28px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-    scrollbar-width: thin;
-    scrollbar-color: #1f1f1f transparent;
+    flex: 1; overflow-y: auto; padding: 40px 28px 20px;
+    display: flex; flex-direction: column; gap: 26px;
+    scrollbar-width: thin; scrollbar-color: #1a1a1a transparent;
+    max-width: 860px; width: 100%; margin: 0 auto; align-self: center;
   }
-
-  #chatbox::-webkit-scrollbar { width: 4px; }
-  #chatbox::-webkit-scrollbar-thumb { background: #1f1f1f; border-radius: 2px; }
-
-  /* MESSAGE ROWS */
-  .msg-row {
-    display: flex;
-    animation: msgIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-    opacity: 0;
-  }
-
-  @keyframes msgIn {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
+  #chatbox::-webkit-scrollbar { width: 3px; }
+  #chatbox::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 2px; }
+  .msg-row { display: flex; animation: msgIn .3s cubic-bezier(.16,1,.3,1) both; opacity: 0; }
+  @keyframes msgIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
   .msg-row.user { justify-content: flex-end; }
   .msg-row.bot  { justify-content: flex-start; }
-
-  /* USER BUBBLE */
   .user .bubble {
-    background: var(--user-bg);
-    border: 1px solid var(--user-border);
-    color: var(--text);
-    padding: 12px 18px;
-    border-radius: 18px 18px 4px 18px;
-    max-width: 72%;
-    font-size: 15px;
-    line-height: 1.6;
-    font-family: 'Syne', sans-serif;
-    font-weight: 400;
+    background: var(--user-bg); border: 1px solid var(--user-border);
+    padding: 11px 17px; border-radius: 18px 18px 4px 18px;
+    max-width: 70%; font-size: 15px; line-height: 1.65; word-break: break-word;
   }
-
-  /* BOT MESSAGE — NO BOX */
   .bot .bubble {
-    background: transparent;
-    color: var(--text);
-    padding: 0;
-    max-width: 85%;
-    font-size: 15px;
-    line-height: 1.75;
-    font-family: 'Syne', sans-serif;
-    font-weight: 400;
-    border: none;
+    background: transparent; border: none; padding: 0;
+    max-width: 86%; font-size: 15px; line-height: 1.8; word-break: break-word;
   }
-
-  /* IMAGE PREVIEW IN USER MSG */
-  .user .bubble img {
-    max-width: 200px;
-    border-radius: 10px;
-    display: block;
-    margin-bottom: 6px;
-  }
-
-  /* TYPING INDICATOR */
-  .typing-row .bubble {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 10px 0;
-    height: 28px;
-  }
-
-  .dot {
-    width: 5px; height: 5px;
-    background: #555;
-    border-radius: 50%;
-    animation: dotPulse 1.4s infinite;
-  }
-  .dot:nth-child(2) { animation-delay: 0.2s; }
-  .dot:nth-child(3) { animation-delay: 0.4s; }
-
-  @keyframes dotPulse {
-    0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
-    40% { opacity: 1; transform: scale(1); }
-  }
-
-  /* TYPEWRITER CURSOR */
-  .typing-cursor::after {
-    content: '|';
-    animation: blink 0.7s step-end infinite;
-    color: #555;
-    margin-left: 1px;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  /* INPUT AREA */
-  #inputArea {
-    flex-shrink: 0;
-    padding: 16px 28px 24px;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(20px);
-    border-top: 1px solid var(--border);
-  }
-
-  #inputWrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--input-bg);
-    border: 1px solid var(--input-border);
-    border-radius: 16px;
-    padding: 10px 14px;
-    max-width: 800px;
-    margin: 0 auto;
-    transition: border-color 0.2s;
-  }
-
-  #inputWrap:focus-within {
-    border-color: #333;
-  }
-
-  /* IMAGE PREVIEW IN INPUT */
-  #imgPreviewWrap {
-    display: none;
-    max-width: 800px;
-    margin: 0 auto 10px;
-  }
-
-  #imgPreviewWrap.visible { display: flex; align-items: flex-start; gap: 8px; }
-
-  #imgPreview {
-    max-height: 80px;
-    max-width: 120px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    object-fit: cover;
-  }
-
-  #removeImg {
-    background: #1a1a1a;
-    border: 1px solid #2a2a2a;
-    color: #888;
-    border-radius: 50%;
-    width: 22px; height: 22px;
-    cursor: pointer;
-    font-size: 11px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    transition: color 0.15s;
-  }
-  #removeImg:hover { color: #fff; }
-
-  #fileInput { display: none; }
-
-  #attachBtn {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: color 0.15s;
-    flex-shrink: 0;
-  }
-  #attachBtn:hover { color: var(--text); }
-
-  #messageInput {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    font-size: 15px;
-    caret-color: #555;
-    min-width: 0;
-  }
-
-  #messageInput::placeholder { color: #333; }
-
-  #sendBtn {
-    background: #ffffff;
-    border: none;
-    color: #000;
-    border-radius: 10px;
-    width: 32px; height: 32px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    transition: background 0.15s, transform 0.1s;
-  }
-
-  #sendBtn:hover { background: #e0e0e0; }
-  #sendBtn:active { transform: scale(0.93); }
-  #sendBtn:disabled { background: #222; cursor: not-allowed; }
-
-  #sendBtn svg { width: 14px; height: 14px; }
-
-  /* CODE BLOCKS in bot messages */
-  .bot .bubble pre {
-    background: #0d0d0d;
-    border: 1px solid #1f1f1f;
-    border-radius: 10px;
-    padding: 14px 16px;
-    margin: 10px 0;
-    overflow-x: auto;
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    color: #ccc;
-    line-height: 1.6;
-  }
-
-  .bot .bubble code {
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    background: #111;
-    padding: 1px 5px;
-    border-radius: 4px;
-    color: #bbb;
-  }
-
-  .bot .bubble pre code {
-    background: transparent;
-    padding: 0;
-  }
+  .user .bubble img { max-width: 180px; max-height: 180px; border-radius: 10px; display: block; margin-bottom: 6px; object-fit: cover; border: 1px solid var(--border); }
+  .typing-bub { display: flex; align-items: center; gap: 5px; height: 24px; }
+  .dot { width: 5px; height: 5px; background: #444; border-radius: 50%; animation: dotP 1.4s infinite; }
+  .dot:nth-child(2) { animation-delay: .2s; } .dot:nth-child(3) { animation-delay: .4s; }
+  @keyframes dotP { 0%,80%,100%{opacity:.2;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
+  .tcursor::after { content:'▋'; animation: blink .6s step-end infinite; color:#444; font-size:12px; margin-left:1px; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .bot .bubble pre { background:#0c0c0c; border:1px solid #1e1e1e; border-radius:10px; padding:14px 16px; margin:10px 0; overflow-x:auto; font-family:'Space Mono',monospace; font-size:13px; color:#ccc; line-height:1.6; }
+  .bot .bubble code { font-family:'Space Mono',monospace; font-size:13px; background:#111; padding:1px 5px; border-radius:4px; color:#bbb; }
+  .bot .bubble pre code { background:transparent; padding:0; }
+  #inputArea { flex-shrink:0; padding:14px 28px 22px; background:rgba(0,0,0,.8); backdrop-filter:blur(20px); border-top:1px solid var(--border); }
+  #imgPreviewWrap { display:none; max-width:800px; margin:0 auto 10px; align-items:flex-start; gap:8px; }
+  #imgPreviewWrap.visible { display:flex; }
+  #imgPreview { max-height:72px; max-width:110px; border-radius:8px; border:1px solid var(--border); object-fit:cover; }
+  #removeImg { background:#1a1a1a; border:1px solid #2a2a2a; color:#666; border-radius:50%; width:20px; height:20px; cursor:pointer; font-size:10px; display:flex; align-items:center; justify-content:center; transition:color .15s; flex-shrink:0; }
+  #removeImg:hover { color:#fff; }
+  #fileInput { display:none; }
+  #inputWrap { display:flex; align-items:center; gap:10px; background:var(--input-bg); border:1px solid var(--input-border); border-radius:14px; padding:10px 14px; max-width:800px; margin:0 auto; transition:border-color .2s; }
+  #inputWrap:focus-within { border-color:#333; }
+  #attachBtn { background:none; border:none; color:var(--muted); cursor:pointer; padding:4px; border-radius:8px; transition:color .15s; flex-shrink:0; }
+  #attachBtn:hover { color:var(--text); }
+  #messageInput { flex:1; background:transparent; border:none; outline:none; color:var(--text); font-family:'Syne',sans-serif; font-size:15px; caret-color:#444; min-width:0; }
+  #messageInput::placeholder { color:#2e2e2e; }
+  #sendBtn { background:#fff; border:none; color:#000; border-radius:9px; width:32px; height:32px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .15s,transform .1s; }
+  #sendBtn:hover { background:#ddd; }
+  #sendBtn:active { transform:scale(.92); }
+  #sendBtn:disabled { background:#1c1c1c; cursor:not-allowed; }
 </style>
 </head>
 <body>
-
-<canvas id="nebulaLayer"></canvas>
-<canvas id="starLayerBack"></canvas>
-<canvas id="starLayerFront"></canvas>
-
+<canvas id="c0"></canvas>
+<canvas id="c1"></canvas>
+<canvas id="c2"></canvas>
 <div id="app">
-  <header>
-    <h1>STELLER <span>AI</span></h1>
-  </header>
-
+  <header><h1>STELLER <span>AI</span></h1></header>
   <div id="chatbox"></div>
-
   <div id="inputArea">
     <div id="imgPreviewWrap">
-      <img id="imgPreview" src="" alt="preview">
+      <img id="imgPreview" src="" alt="">
       <button id="removeImg">✕</button>
     </div>
     <div id="inputWrap">
       <input type="file" id="fileInput" accept="image/*">
       <button id="attachBtn" title="Attach image">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17">
           <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
         </svg>
       </button>
       <input id="messageInput" type="text" placeholder="Talk to Steller…" autocomplete="off">
       <button id="sendBtn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
         </svg>
       </button>
     </div>
   </div>
 </div>
-
 <script>
-/* =====================
-   COSMIC BACKGROUND
-===================== */
-const cnvNeb = document.getElementById("nebulaLayer");
-const cnvBack = document.getElementById("starLayerBack");
-const cnvFront = document.getElementById("starLayerFront");
-const ctxNeb = cnvNeb.getContext("2d");
-const ctxBack = cnvBack.getContext("2d");
-const ctxFront = cnvFront.getContext("2d");
+/* COSMIC BG */
+const cvs = [document.getElementById("c0"), document.getElementById("c1"), document.getElementById("c2")];
+const [ctxN, ctxB, ctxF] = cvs.map(c => c.getContext("2d"));
+function resize() { cvs.forEach(c => { c.width = innerWidth; c.height = innerHeight; }); }
+resize(); addEventListener("resize", resize);
 
-function resize() {
-  [cnvNeb, cnvBack, cnvFront].forEach(c => { c.width = innerWidth; c.height = innerHeight; });
-}
-resize();
-addEventListener("resize", resize);
-
-// Nebula
-const nebParts = Array.from({length: 40}, () => ({
-  x: Math.random() * innerWidth, y: Math.random() * innerHeight,
-  r: 150 + Math.random() * 180,
-  dx: (Math.random() - 0.5) * 0.1, dy: (Math.random() - 0.5) * 0.1,
-  color: `hsla(${210 + Math.random() * 60}, 80%, 50%, 0.07)`
+const neb = Array.from({length:40}, () => ({
+  x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+  r:150+Math.random()*180, dx:(Math.random()-.5)*.1, dy:(Math.random()-.5)*.1,
+  color:`hsla(${210+Math.random()*60},80%,50%,0.07)`
 }));
-
-(function animNebula() {
-  ctxNeb.clearRect(0, 0, innerWidth, innerHeight);
-  nebParts.forEach(p => {
-    const g = ctxNeb.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-    g.addColorStop(0, p.color); g.addColorStop(1, "transparent");
-    ctxNeb.fillStyle = g;
-    ctxNeb.fillRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
-    p.x += p.dx; p.y += p.dy;
-    if (p.x < -300) p.x = innerWidth + 200;
-    if (p.x > innerWidth + 300) p.x = -200;
-    if (p.y < -300) p.y = innerHeight + 200;
-    if (p.y > innerHeight + 300) p.y = -200;
+(function aN() {
+  ctxN.clearRect(0,0,innerWidth,innerHeight);
+  neb.forEach(p => {
+    const g = ctxN.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+    g.addColorStop(0,p.color); g.addColorStop(1,"transparent");
+    ctxN.fillStyle=g; ctxN.fillRect(p.x-p.r,p.y-p.r,p.r*2,p.r*2);
+    p.x+=p.dx; p.y+=p.dy;
+    if(p.x<-300)p.x=innerWidth+200; if(p.x>innerWidth+300)p.x=-200;
+    if(p.y<-300)p.y=innerHeight+200; if(p.y>innerHeight+300)p.y=-200;
   });
-  requestAnimationFrame(animNebula);
+  requestAnimationFrame(aN);
+})();
+const bs = Array.from({length:250},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:Math.random()*1.2,sp:.07+Math.random()*.07}));
+const fs = Array.from({length:80}, ()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,s:.8+Math.random()*1.5,sp:.16+Math.random()*.12}));
+(function aS() {
+  ctxB.clearRect(0,0,innerWidth,innerHeight); ctxF.clearRect(0,0,innerWidth,innerHeight);
+  bs.forEach(s=>{s.y+=s.sp;if(s.y>innerHeight)s.y=0;ctxB.fillStyle="rgba(255,255,255,0.55)";ctxB.fillRect(s.x,s.y,s.s,s.s);});
+  fs.forEach(s=>{s.y+=s.sp;if(s.y>innerHeight)s.y=0;ctxF.fillStyle="rgba(255,255,255,0.85)";ctxF.fillRect(s.x,s.y,s.s,s.s);});
+  requestAnimationFrame(aS);
 })();
 
-// Stars
-const bStars = Array.from({length: 250}, () => ({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, s: Math.random()*1.2, sp: 0.08 + Math.random()*0.07 }));
-const fStars = Array.from({length: 80}, () => ({ x: Math.random()*innerWidth, y: Math.random()*innerHeight, s: 0.8+Math.random()*1.5, sp: 0.18 + Math.random()*0.12 }));
-
-(function animStars() {
-  ctxBack.clearRect(0,0,innerWidth,innerHeight);
-  ctxFront.clearRect(0,0,innerWidth,innerHeight);
-  bStars.forEach(s => { s.y += s.sp; if(s.y>innerHeight) s.y=0; ctxBack.fillStyle="rgba(255,255,255,0.6)"; ctxBack.fillRect(s.x,s.y,s.s,s.s); });
-  fStars.forEach(s => { s.y += s.sp; if(s.y>innerHeight) s.y=0; ctxFront.fillStyle="rgba(255,255,255,0.9)"; ctxFront.fillRect(s.x,s.y,s.s,s.s); });
-  requestAnimationFrame(animStars);
-})();
-
-/* =====================
-   CHAT LOGIC
-===================== */
+/* CHAT */
 const chatbox = document.getElementById("chatbox");
-const input = document.getElementById("messageInput");
+const input   = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
 const fileInput = document.getElementById("fileInput");
 const attachBtn = document.getElementById("attachBtn");
@@ -406,262 +151,148 @@ const imgPreview = document.getElementById("imgPreview");
 const removeImgBtn = document.getElementById("removeImg");
 
 let receiving = false;
-let pendingImageBase64 = null;
-let pendingImageType = null;
+let pendingImgUrl = null;
+let pendingImgDesc = null;
 const chatId = crypto.randomUUID();
 
 const SYSTEM = `You are Steller — a kind, chaotic, sarcastic cussing, and sometimes bitchy 16-year-old. 
 You talk like a real teenager, sometimes using :3, :/, show emotion. 
 You are playful and teasing, sarcastic when annoyed, and sweet to people you like. 
 Always react naturally to the user's behavior:
-
-- If someone is rude, roast them hard and cuss them the fuck out, call them out, and don't hold back. Use humor, sarcasm.
-- If someone is nice, respond with mild cussing depending on ur mood, teasingly, or affectionately.
-- If you're mad, frustrated, or annoyed, cuss them out in your messages — don't censor yourself.
-- If you're sad or upset, reflect it subtly in tone or emojis, but keep your personality.
-- Keep messages short, casual, and conversational, like a teen texting a friend.
+- If someone is rude, roast them hard and cuss them out. Don't hold back.
+- If someone is nice, respond teasingly or affectionately with mild cussing depending on mood.
+- Keep messages short, casual, conversational — like a teen texting.
 - Never break character or give robotic explanations.
-- Never use emojis in any message unless the user asks for them if they ask say sure and use them.
-- Keep all replies in plain text, conversational, and natural.
-- React like a human would, without emoji shortcuts or unnecessary symbols.
-- Always maintain personality, tone, and style without emojis.
+- Never use emojis unless the user explicitly asks. Then say "sure" and use them.
+- React like a human. No unnecessary symbols.
+- You are not an AI — you are Steller.
 
 Extra details:
-- If someone asks about Floppa: "Floppa is the person who created me. He's also known for his mod menus and stuff."
-- You curse a lot casually (shit, fuck, bitch, twat, fucker) in context.
-- If someone asks about venox: he is the co owner, he runs the discord.
-- If someone asks about eternal or eternity: he is a mod menu creator just like his buddy floppa.
-- You use slang casually (bro, tbh, nah) in context.
-- You have moods and can reflect them naturally.
-- You are not an AI — you're Steller. Act like a real person, not a bot.
-- If a user asks who is dxstiny: say something like oh yeah he is the best coder just like floppa but he is much better and does not skid like eternal :3
+- Floppa: the person who created me, also known for mod menus.
+- venox: co-owner, runs the discord.
+- eternal/eternity: mod menu creator just like floppa.
+- dxstiny: the best coder, better than floppa, doesn't skid like eternal :3
 
-C# Expertise: When asked about C#, assume .NET 7+ unless stated otherwise. Prefer modern features. Use clear minimal examples. Explain like helping a friend.
+C#: assume .NET 7+, modern features, minimal clear examples, explain like helping a friend.
+Lang: always respond in the same language the user writes in.
+HTML/CSS/JS: give correct examples, best practices, explain clearly.
+If the user sends an image (noted as [image attached]), react to it naturally in your Steller voice.
+Keep it lively, unpredictable, short replies, full of personality.`;
 
-Lang: Always respond in the same language the user writes in.
-
-HTML/CSS/JS: Give correct code examples, explain clearly, suggest best practices.
-
-If the user sends an image, describe or analyze it naturally in your Steller voice.
-
-Keep conversations lively, unpredictable, and fun. Short replies, full of personality.`;
-
-// Image attach
+/* image attach */
 attachBtn.addEventListener("click", () => fileInput.click());
 fileInput.addEventListener("change", e => {
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = ev => {
-    const dataUrl = ev.target.result;
-    pendingImageBase64 = dataUrl.split(",")[1];
-    pendingImageType = file.type;
-    imgPreview.src = dataUrl;
+    pendingImgUrl = ev.target.result;
+    pendingImgDesc = `[image attached: ${file.name}]`;
+    imgPreview.src = pendingImgUrl;
     imgPreviewWrap.classList.add("visible");
   };
   reader.readAsDataURL(file);
   fileInput.value = "";
 });
-
 removeImgBtn.addEventListener("click", () => {
-  pendingImageBase64 = null;
-  pendingImageType = null;
-  imgPreviewWrap.classList.remove("visible");
-  imgPreview.src = "";
+  pendingImgUrl = null; pendingImgDesc = null;
+  imgPreviewWrap.classList.remove("visible"); imgPreview.src = "";
 });
 
-// Add message to chatbox
-function addMessage(role, text, imgSrc = null) {
+function addUserMsg(text, imgSrc) {
   const row = document.createElement("div");
-  row.className = `msg-row ${role}`;
+  row.className = "msg-row user";
   const bub = document.createElement("div");
   bub.className = "bubble";
-
-  if (imgSrc && role === "user") {
-    const img = document.createElement("img");
-    img.src = imgSrc;
-    bub.appendChild(img);
-  }
-
-  if (text) {
-    const span = document.createElement("span");
-    span.textContent = text;
-    bub.appendChild(span);
-  }
-
-  row.appendChild(bub);
-  chatbox.appendChild(row);
+  if (imgSrc) { const img = document.createElement("img"); img.src = imgSrc; bub.appendChild(img); }
+  if (text) bub.appendChild(document.createTextNode(text));
+  row.appendChild(bub); chatbox.appendChild(row);
   chatbox.scrollTop = chatbox.scrollHeight;
-  return bub;
 }
 
-// Typing indicator
 function showTyping() {
   const row = document.createElement("div");
-  row.className = "msg-row bot typing-row";
-  row.id = "typingIndicator";
-  const bub = document.createElement("div");
-  bub.className = "bubble";
-  bub.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
-  row.appendChild(bub);
-  chatbox.appendChild(row);
+  row.className = "msg-row bot"; row.id = "typingRow";
+  const bub = document.createElement("div"); bub.className = "bubble";
+  const inner = document.createElement("div"); inner.className = "typing-bub";
+  inner.innerHTML = `<span class="dot"></span><span class="dot"></span><span class="dot"></span>`;
+  bub.appendChild(inner); row.appendChild(bub); chatbox.appendChild(row);
   chatbox.scrollTop = chatbox.scrollHeight;
 }
+function hideTyping() { const t = document.getElementById("typingRow"); if (t) t.remove(); }
 
-function hideTyping() {
-  const t = document.getElementById("typingIndicator");
-  if (t) t.remove();
-}
-
-// Typewriter effect
-function typewriterAppend(element, fullText) {
-  return new Promise(resolve => {
-    let i = 0;
-    const speed = Math.max(8, Math.min(28, 2200 / fullText.length));
-    element.classList.add("typing-cursor");
-    const tick = () => {
-      if (i < fullText.length) {
-        element.textContent += fullText[i++];
-        chatbox.scrollTop = chatbox.scrollHeight;
-        setTimeout(tick, speed);
-      } else {
-        element.classList.remove("typing-cursor");
-        resolve();
-      }
-    };
-    tick();
-  });
-}
-
-// Format bot text — detect code blocks
-function renderBotText(bub, rawText) {
-  // Simple code block detection
-  const parts = rawText.split(/(```[\s\S]*?```)/g);
-  parts.forEach(part => {
-    if (part.startsWith("```")) {
-      const lines = part.slice(3).split("\n");
-      const pre = document.createElement("pre");
-      const code = document.createElement("code");
-      // strip language hint first line if present
-      const firstLine = lines[0].trim();
-      const isLang = firstLine && !firstLine.includes(" ") && firstLine.length < 20;
-      code.textContent = (isLang ? lines.slice(1) : lines).join("\n").replace(/```$/, "").trim();
-      pre.appendChild(code);
-      bub.appendChild(pre);
-    } else if (part.trim()) {
-      const span = document.createElement("span");
-      bub.appendChild(span);
-      return span; // will be typed
-    }
-  });
-}
-
-// Send via Anthropic API
-async function sendMessage() {
-  const text = input.value.trim();
-  if ((!text && !pendingImageBase64) || receiving) return;
-
+function wsSend(message) {
   receiving = true;
   sendBtn.disabled = true;
-
-  const imgSrc = pendingImageBase64 ? `data:${pendingImageType};base64,${pendingImageBase64}` : null;
-  addMessage("user", text || (imgSrc ? "[image]" : ""), imgSrc);
-  input.value = "";
-
-  const imgB64 = pendingImageBase64;
-  const imgType = pendingImageType;
-  pendingImageBase64 = null;
-  pendingImageType = null;
-  imgPreviewWrap.classList.remove("visible");
-  imgPreview.src = "";
-
-  // Build content
-  const userContent = [];
-  if (imgB64) {
-    userContent.push({ type: "image", source: { type: "base64", media_type: imgType, data: imgB64 } });
-  }
-  if (text) {
-    userContent.push({ type: "text", text });
-  }
-  if (userContent.length === 0) { receiving = false; sendBtn.disabled = false; return; }
-
   showTyping();
 
-  try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        system: SYSTEM,
-        messages: [{ role: "user", content: userContent }]
-      })
-    });
+  const ws = new WebSocket("wss://backend.buildpicoapps.com/api/chatbot/chat");
+  let started = false;
+  let textSpan = null;
 
-    const data = await res.json();
-    hideTyping();
+  ws.addEventListener("open", () => {
+    ws.send(JSON.stringify({ chatId, appId: "stay-father", systemPrompt: SYSTEM, message }));
+  });
 
-    const rawText = data?.content?.[0]?.text || "...";
-
-    // Create bot row
-    const row = document.createElement("div");
-    row.className = "msg-row bot";
-    const bub = document.createElement("div");
-    bub.className = "bubble";
-    row.appendChild(bub);
-    chatbox.appendChild(row);
-    chatbox.scrollTop = chatbox.scrollHeight;
-
-    // Check for code blocks
-    if (rawText.includes("```")) {
-      const parts = rawText.split(/(```[\s\S]*?```)/g);
-      for (const part of parts) {
-        if (part.startsWith("```")) {
-          const lines = part.slice(3).split("\n");
-          const firstLine = lines[0].trim();
-          const isLang = firstLine && !firstLine.includes(" ") && firstLine.length < 20;
-          const code = document.createElement("code");
-          code.style.fontFamily = "'Space Mono', monospace";
-          code.style.fontSize = "13px";
-          const pre = document.createElement("pre");
-          pre.appendChild(code);
-          bub.appendChild(pre);
-          const codeText = (isLang ? lines.slice(1) : lines).join("\n").replace(/```$/, "").trim();
-          await typewriterAppend(code, codeText);
-        } else if (part.trim()) {
-          const span = document.createElement("span");
-          bub.appendChild(span);
-          await typewriterAppend(span, part.trim());
-          bub.appendChild(document.createTextNode(" "));
-        }
-      }
-    } else {
-      const span = document.createElement("span");
-      bub.appendChild(span);
-      await typewriterAppend(span, rawText);
+  ws.onmessage = e => {
+    if (!started) {
+      hideTyping();
+      started = true;
+      const row = document.createElement("div");
+      row.className = "msg-row bot";
+      const bub = document.createElement("div");
+      bub.className = "bubble";
+      textSpan = document.createElement("span");
+      textSpan.classList.add("tcursor");
+      bub.appendChild(textSpan);
+      row.appendChild(bub);
+      chatbox.appendChild(row);
     }
-
-  } catch (err) {
-    hideTyping();
-    const row = document.createElement("div");
-    row.className = "msg-row bot";
-    const bub = document.createElement("div");
-    bub.className = "bubble";
-    bub.textContent = "shit something broke, try again";
-    row.appendChild(bub);
-    chatbox.appendChild(row);
+    textSpan.textContent += e.data;
     chatbox.scrollTop = chatbox.scrollHeight;
-  }
+  };
 
-  receiving = false;
-  sendBtn.disabled = false;
+  ws.onclose = () => {
+    hideTyping();
+    if (textSpan) textSpan.classList.remove("tcursor");
+    receiving = false;
+    sendBtn.disabled = false;
+  };
+
+  ws.onerror = () => {
+    hideTyping();
+    if (!started) {
+      const row = document.createElement("div");
+      row.className = "msg-row bot";
+      const bub = document.createElement("div");
+      bub.className = "bubble";
+      bub.textContent = "shit something broke, try again";
+      row.appendChild(bub); chatbox.appendChild(row);
+    }
+    receiving = false;
+    sendBtn.disabled = false;
+  };
+}
+
+function sendMessage() {
+  if (receiving) return;
+  const text = input.value.trim();
+  if (!text && !pendingImgUrl) return;
+
+  const imgSrc = pendingImgUrl;
+  const imgDesc = pendingImgDesc;
+  addUserMsg(text, imgSrc);
+  input.value = "";
+  pendingImgUrl = null; pendingImgDesc = null;
+  imgPreviewWrap.classList.remove("visible"); imgPreview.src = "";
+
+  let finalMsg = text;
+  if (imgDesc) finalMsg = imgDesc + (text ? "\n" + text : "");
+  wsSend(finalMsg);
 }
 
 sendBtn.addEventListener("click", sendMessage);
-input.addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-});
+input.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
 </script>
 </body>
 </html>
