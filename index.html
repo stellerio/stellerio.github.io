@@ -542,60 +542,51 @@ function showTyping() {
 }
 function hideTyping() { const t = document.getElementById("typingRow"); if (t) t.remove(); }
 
-const conversationHistory = [];
+const chatId = crypto.randomUUID();
 
-async function wsSend(message) {
+function wsSend(message) {
   receiving = true;
   sendBtn.disabled = true;
   showTyping();
 
-  conversationHistory.push({ role: "user", content: message });
+  const ws = new WebSocket("wss://backend.buildpicoapps.com/api/chatbot/chat");
+  let started = false;
+  let textSpan = null;
 
-  try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        system: SYSTEM,
-        messages: conversationHistory
-      })
-    });
+  ws.addEventListener("open", () => {
+    ws.send(JSON.stringify({ chatId, appId: "stay-father", systemPrompt: SYSTEM, message }));
+  });
 
-    const data = await response.json();
-    hideTyping();
-
-    const replyText = data?.content?.[0]?.text || "idk something went wrong lol";
-    conversationHistory.push({ role: "assistant", content: replyText });
-
-    const textSpan = addBotRow();
-    // stream it in character by character for effect
-    let i = 0;
-    function typeChar() {
-      if (i < replyText.length) {
-        textSpan.textContent += replyText[i++];
-        chatbox.scrollTop = chatbox.scrollHeight;
-        setTimeout(typeChar, 12);
-      } else {
-        textSpan.classList.remove("tcursor");
-        receiving = false;
-        sendBtn.disabled = false;
-      }
+  ws.onmessage = e => {
+    if (!started) {
+      hideTyping();
+      started = true;
+      textSpan = addBotRow();
     }
-    typeChar();
+    textSpan.textContent += e.data;
+    chatbox.scrollTop = chatbox.scrollHeight;
+  };
 
-  } catch (err) {
+  ws.onclose = () => {
     hideTyping();
-    const row = document.createElement("div");
-    row.className = "msg-row bot";
-    const bub = document.createElement("div");
-    bub.className = "bubble";
-    bub.textContent = "ugh the api is being annoying, try again";
-    row.appendChild(bub); chatbox.appendChild(row);
+    if (textSpan) textSpan.classList.remove("tcursor");
     receiving = false;
     sendBtn.disabled = false;
-  }
+  };
+
+  ws.onerror = () => {
+    hideTyping();
+    if (!started) {
+      const row = document.createElement("div");
+      row.className = "msg-row bot";
+      const bub = document.createElement("div");
+      bub.className = "bubble";
+      bub.textContent = "ugh something broke, try again";
+      row.appendChild(bub); chatbox.appendChild(row);
+    }
+    receiving = false;
+    sendBtn.disabled = false;
+  };
 }
 
 function sendMessage() {
