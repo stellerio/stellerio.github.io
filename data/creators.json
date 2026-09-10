@@ -1,0 +1,23 @@
+{
+  "updated": "2026-09-10",
+  "note": "Subscriber counts are rounded snapshots from public third-party trackers and can change continuously.",
+  "creators": [
+    {"name":"MrBeast","handle":"@MrBeast","subs":516000000,"views":0,"category":"Entertainment","country":"United States","color":"#ffc857","initials":"MB","era":"Modern giant","description":"High-budget challenges, events, philanthropy and creator-led entertainment."},
+    {"name":"T-Series","handle":"@tseries","subs":315000000,"views":352000000000,"category":"Music","country":"India","color":"#ff5b5b","initials":"TS","era":"Platform giant","description":"One of YouTube's defining music and entertainment channels."},
+    {"name":"Cocomelon","handle":"@cocomelon","subs":202000000,"views":221000000000,"category":"Kids & education","country":"United States","color":"#5cc8ff","initials":"CC","era":"Platform giant","description":"A huge global children's media brand built around animated nursery content."},
+    {"name":"PewDiePie","handle":"@PewDiePie","subs":110000000,"views":29700000000,"category":"Gaming & commentary","country":"Sweden","color":"#d85cff","initials":"PD","era":"Creator legend","description":"A landmark creator whose career helped define the modern YouTube era."},
+    {"name":"Mark Rober","handle":"@MarkRober","subs":74000000,"views":0,"category":"Science & engineering","country":"United States","color":"#58e6a7","initials":"MR","era":"Modern creator","description":"Engineering experiments, science storytelling and large-scale creator campaigns."},
+    {"name":"Stokes Twins","handle":"@stokestwins","subs":146000000,"views":0,"category":"Entertainment","country":"United States","color":"#ff77b7","initials":"ST","era":"Modern giant","description":"Short-form entertainment and challenge-driven creator content."},
+    {"name":"Like Nastya","handle":"@LikeNastyaOfficial","subs":133000000,"views":0,"category":"Kids & family","country":"United States","color":"#8d7cff","initials":"LN","era":"Platform giant","description":"A global children's entertainment channel distributed across languages and regions."},
+    {"name":"WWE","handle":"@WWE","subs":112000000,"views":0,"category":"Sports entertainment","country":"United States","color":"#f2f2f2","initials":"W","era":"Media giant","description":"A massive sports-entertainment archive and current programming channel."}
+  ],
+  "milestones": [
+    {"year":"2005","title":"YouTube launches","text":"The platform begins, creating a new home for user-created video."},
+    {"year":"2006","title":"Early creator era","text":"Channels such as Smosh help establish the idea of YouTube personalities."},
+    {"year":"2012","title":"MrBeast joins","text":"Jimmy Donaldson creates the channel that would later become a global creator business."},
+    {"year":"2019","title":"100M club expands","text":"T-Series and PewDiePie become early channels to receive the Red Diamond Creator Award."},
+    {"year":"2022","title":"MrBeast passes 100M","text":"MrBeast joins the 100 million subscriber club and becomes the largest individual creator."},
+    {"year":"2024","title":"MrBeast takes the overall lead","text":"MrBeast becomes YouTube's most-subscribed channel, passing T-Series."},
+    {"year":"2026","title":"500M milestone","text":"YouTube says MrBeast became the first individual creator to reach 500 million subscribers."}
+  ]
+}
