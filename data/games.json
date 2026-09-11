@@ -1,28 +1,20 @@
 {
   "games": [
     {
-      "id": "game-01",
-      "name": "Your First Game",
-      "description": "Drop a GitHub Pages game URL into the url field when it is ready.",
-      "github": "",
-      "url": "",
-      "tags": ["NEW", "GITHUB"]
+      "id": "game-one",
+      "name": "Game One",
+      "description": "Replace the URL with your first GitHub Pages game.",
+      "url": "https://username.github.io/game-one/",
+      "github": "https://github.com/username/game-one",
+      "tags": ["NEW", "WEB"]
     },
     {
-      "id": "game-02",
-      "name": "Next Project",
-      "description": "Another clean slot for a future browser game.",
-      "github": "",
-      "url": "",
-      "tags": ["WIP"]
-    },
-    {
-      "id": "game-03",
-      "name": "Coming Soon",
-      "description": "A reserved slot for another playable project.",
-      "github": "",
-      "url": "",
-      "tags": ["SOON"]
+      "id": "game-two",
+      "name": "Game Two",
+      "description": "Replace the URL with another GitHub Pages game.",
+      "url": "https://username.github.io/game-two/",
+      "github": "https://github.com/username/game-two",
+      "tags": ["ARCADE"]
     }
   ]
 }
