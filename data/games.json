@@ -3,22 +3,25 @@
     {
       "id": "game-01",
       "name": "Your First Game",
-      "description": "A placeholder slot for the next game you want to add. Replace the blank GitHub value when the project is ready.",
+      "description": "Drop a GitHub Pages game URL into the url field when it is ready.",
       "github": "",
+      "url": "",
       "tags": ["NEW", "GITHUB"]
     },
     {
       "id": "game-02",
       "name": "Next Project",
-      "description": "Another clean slot for a future game or experiment. The library automatically picks it up from this file.",
+      "description": "Another clean slot for a future browser game.",
       "github": "",
-      "tags": ["EXPERIMENT", "WIP"]
+      "url": "",
+      "tags": ["WIP"]
     },
     {
       "id": "game-03",
       "name": "Coming Soon",
-      "description": "Keep this card until you have another project ready to publish.",
+      "description": "A reserved slot for another playable project.",
       "github": "",
+      "url": "",
       "tags": ["SOON"]
     }
   ]
