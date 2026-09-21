@@ -5,31 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>STELLARIO</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#000;color:#fff;font-family:Inter,system-ui;overflow-x:hidden}
-body:before{content:"";position:fixed;inset:-40%;background:radial-gradient(circle,#fff2,transparent 25%),radial-gradient(circle,#aaa2,transparent 35%);animation:bg 20s infinite alternate;z-index:-1}
-.app{min-height:100vh;display:flex}.main{flex:1;padding:45px;text-align:center;transition:.5s}
-.menuBtn{position:fixed;right:25px;top:25px;width:52px;height:52px;border-radius:16px;background:#111;border:1px solid #fff3;color:#fff;cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:center;animation:pulse 3s infinite}
-svg{width:25px;height:25px;fill:none;stroke:white;stroke-width:2}
-.title{font-size:clamp(50px,8vw,110px);font-weight:1000;letter-spacing:14px;background:linear-gradient(90deg,#fff,#888,#eee,#555,#fff);background-size:400%;background-clip:text;color:transparent;animation:shine 8s infinite linear,float 5s infinite}
-.sub{color:#999;font-size:22px;animation:fade 2s}
-.search{margin:40px auto;width:min(600px,90%);padding:18px 25px;border-radius:50px;background:#111;border:1px solid #fff2;color:white;font-size:16px;outline:none;transition:.4s}.search:focus{box-shadow:0 0 40px #fff3}
-.games{display:flex;justify-content:center;gap:25px;flex-wrap:wrap}.game{width:280px;padding:25px;border-radius:28px;background:#ffffff08;border:1px solid #fff2;transition:.5s}.game:hover{transform:translateY(-12px) scale(1.03);border-color:#fff6}.hidden{display:none}
-.sidebar{position:fixed;right:-330px;top:0;height:100vh;width:300px;background:#080808ee;border-left:1px solid #fff2;padding:80px 25px;backdrop-filter:blur(25px);transition:.6s;z-index:4}.sidebar.open{right:0}
-.sideGame{display:flex;align-items:center;gap:15px;padding:16px;border-radius:18px;background:#ffffff08;border:1px solid #fff2;color:white;width:100%;margin:12px 0;cursor:pointer;transition:.4s}.sideGame:hover{transform:translateX(-8px);background:#fff2}
-.viewer{display:none;margin:50px auto;width:90%;height:650px;border-radius:35px;background:#050505;border:1px solid #fff3;align-items:center;justify-content:center;font-size:28px;color:#777;animation:open .5s}.viewer.active{display:flex}
-@keyframes shine{to{background-position:400%}}@keyframes float{50%{transform:translateY(-10px)}}@keyframes bg{to{transform:scale(1.3)}}@keyframes open{from{opacity:0;transform:scale(.8)}}@keyframes pulse{50%{transform:scale(1.08)}}@keyframes fade{from{opacity:0}}
+body{margin:0;background:#000;color:white;font-family:Inter,Arial;text-align:center}.games{display:flex;gap:20px;justify-content:center;margin:40px}.game,button{padding:20px;border-radius:20px;background:#111;color:white;border:1px solid #444;cursor:pointer}.viewer{display:none;margin:30px auto;width:90%;height:650px}.viewer.active{display:block}iframe{width:100%;height:100%;border:0;border-radius:20px}
 </style>
 </head>
 <body>
-<button class="menuBtn" onclick="toggleMenu()"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-<div class="app"><main class="main"><h1 class="title">STELLARIO</h1><p class="sub">Your online gaming universe.</p>
-<input class="search" id="search" placeholder="Search games..." oninput="searchGames()">
-<div id="games" class="games"><div class="game" data-name="Game One">Game One</div><div class="game" data-name="Game Two">Game Two</div><div class="game" data-name="Game Three">Game Three</div></div>
-<div id="viewer" class="viewer">Select a game from the menu</div></main>
-<aside id="side" class="sidebar"><h2>STELLARIO</h2><button class="sideGame" onclick="openGame('Game One')"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14"/></svg>Game One</button><button class="sideGame" onclick="openGame('Game Two')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>Game Two</button><button class="sideGame" onclick="openGame('Game Three')"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>Game Three</button></aside></div>
+<h1>STELLARIO</h1>
+<p>Your online gaming universe.</p>
+<div class="games"><div class="game">Game One</div><div class="game">Game Two</div><div class="game">Game Three</div></div>
+<button onclick="openGame('Game One')">Game One</button>
+<div id="viewer" class="viewer"></div>
 <script>
-function toggleMenu(){document.getElementById('side').classList.toggle('open')}
-function openGame(n){let v=document.getElementById('viewer');v.classList.add('active');v.innerHTML=n+' EMBED PLAYER';}
-function searchGames(){let q=document.getElementById('search').value.toLowerCase();document.querySelectorAll('.game').forEach(g=>g.classList.toggle('hidden',!g.dataset.name.toLowerCase().includes(q)))}
+function openGame(n){let v=document.getElementById('viewer');v.classList.add('active');if(n==='Game One'){v.innerHTML='<iframe src="https://scratch.mit.edu/projects/571166814/embed"></iframe>'}else{v.innerHTML=n+' EMBED PLAYER'}}
 </script>
-</body></html>
+</body>
+</html>
