@@ -3,53 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>STELLAR v1</title>
-<meta name="description" content="STELLAR — a space-themed game hub.">
+<title>STELLAR</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#03040a;color:#f7f7ff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
-:root{--panel:rgba(10,12,25,.72);--line:rgba(255,255,255,.11);--muted:#9098ad}
-body:before{content:"";position:fixed;inset:-20%;background:radial-gradient(circle at 70% 30%,rgba(111,74,255,.2),transparent 30%),radial-gradient(circle at 25% 75%,rgba(0,190,255,.12),transparent 28%),radial-gradient(circle at 50% 50%,rgba(255,255,255,.035),transparent 45%);filter:blur(20px);animation:nebula 14s ease-in-out infinite alternate;pointer-events:none}
-.stars,.stars:before,.stars:after{content:"";position:fixed;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.85) 0 1px,transparent 1.5px);background-size:83px 91px;opacity:.32;animation:drift 70s linear infinite;pointer-events:none}.stars:before{background-size:131px 147px;opacity:.22;animation-duration:105s}.stars:after{background-size:47px 59px;opacity:.18;animation-duration:42s}
-.app{position:relative;z-index:2;display:flex;width:100%;height:100%;padding:14px;gap:14px}.side{width:245px;flex:none;border:1px solid var(--line);background:linear-gradient(180deg,rgba(13,16,32,.86),rgba(6,8,17,.68));backdrop-filter:blur(22px);border-radius:22px;padding:18px;box-shadow:0 25px 80px #0008;animation:slideIn .8s cubic-bezier(.2,.8,.2,1)}
-.brand{font-size:22px;font-weight:900;letter-spacing:.22em;background:linear-gradient(90deg,#fff,#a995ff,#62dfff,#fff);background-size:250% auto;color:transparent;background-clip:text;animation:gradient 5s linear infinite}
-.sub{color:#697188;font-size:10px;letter-spacing:.22em;margin-top:5px}.nav{margin-top:34px;display:grid;gap:8px}.nav button{border:1px solid transparent;background:transparent;color:#9ba3b7;text-align:left;padding:13px 14px;border-radius:13px;cursor:pointer;transition:.25s;font-weight:700}.nav button:hover,.nav button.active{background:rgba(255,255,255,.07);border-color:var(--line);color:#fff;transform:translateX(4px);box-shadow:0 0 25px rgba(126,92,255,.1)}
-.sideBottom{position:absolute;bottom:18px;left:18px;right:18px;color:#596176;font-size:10px;letter-spacing:.14em}.status{display:flex;align-items:center;gap:7px;margin-top:12px}.dot{width:7px;height:7px;border-radius:50%;background:#71f7c2;box-shadow:0 0 15px #71f7c2;animation:pulse 1.5s infinite}
-.main{min-width:0;flex:1;display:flex;flex-direction:column;gap:14px}.top{height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border:1px solid var(--line);background:rgba(8,10,20,.52);backdrop-filter:blur(18px);border-radius:18px;animation:fadeDown .8s .1s both}.crumb{font-size:11px;color:#71798e;letter-spacing:.2em}.pill{padding:8px 11px;border:1px solid var(--line);border-radius:999px;color:#aeb5c7;font-size:10px;letter-spacing:.12em}
-.content{min-height:0;flex:1;display:flex;flex-direction:column;gap:14px}.hero{position:relative;min-height:230px;flex:0 0 36%;display:flex;align-items:center;padding:42px;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:linear-gradient(135deg,rgba(18,18,40,.76),rgba(5,7,15,.58));box-shadow:inset 0 1px rgba(255,255,255,.04);animation:rise .9s .15s both}.hero:after{content:"";position:absolute;width:340px;height:340px;right:8%;top:-110px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff 0 1%,#8e70ff 2%,#392d9c 12%,transparent 52%);filter:blur(2px);opacity:.65;animation:planet 8s ease-in-out infinite}.heroText{position:relative;z-index:2}.eyebrow{font-size:10px;letter-spacing:.35em;color:#8d95aa;margin-bottom:12px}.title{margin:0;font-size:clamp(58px,8vw,112px);line-height:.88;font-weight:950;letter-spacing:-.06em;background:linear-gradient(100deg,#fff,#8f79ff,#59e6ff,#fff);background-size:300% auto;color:transparent;background-clip:text;animation:gradient 6s linear infinite;position:relative}.title:after{content:"";display:inline-block;width:4px;height:.72em;background:#fff;margin-left:10px;vertical-align:-.02em;animation:blink .9s steps(1) infinite}.tag{margin-top:18px;color:#8e96aa;max-width:560px;font-size:14px;line-height:1.7}.grid{min-height:0;flex:1;display:grid;grid-template-columns:1fr 1.55fr;gap:14px}.card{border:1px solid var(--line);border-radius:22px;background:rgba(8,10,20,.67);backdrop-filter:blur(18px);box-shadow:0 20px 70px #0007;animation:rise .8s .3s both}.explore{padding:24px}.explore h2{margin:0 0 8px;font-size:17px}.muted{color:#747d92;font-size:12px;line-height:1.6}.launch{margin-top:22px;width:100%;padding:14px;border:1px solid rgba(147,117,255,.35);border-radius:13px;background:linear-gradient(100deg,rgba(124,92,255,.22),rgba(73,220,255,.1));color:white;font-weight:800;cursor:pointer;transition:.25s}.launch:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(124,92,255,.2)}
-.embedCard{display:flex;flex-direction:column;min-height:0;overflow:hidden}.embedHead{height:52px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid var(--line)}.embedTitle{font-size:11px;letter-spacing:.16em;color:#b7bdd0}.controls{display:flex;gap:7px}.controls button{width:32px;height:30px;border-radius:9px;border:1px solid var(--line);background:rgba(255,255,255,.045);color:#c9cedb;cursor:pointer;transition:.2s}.controls button:hover{background:rgba(255,255,255,.1);transform:scale(1.06)}.frameWrap{position:relative;min-height:0;flex:1;background:#020308}.frameWrap iframe{width:100%;height:100%;border:0;display:block}.placeholder{position:absolute;inset:0;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at center,rgba(91,71,180,.12),transparent 50%),#03040a}.placeholderInner{animation:float 4s ease-in-out infinite}.orb{width:70px;height:70px;margin:0 auto 18px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#9176ff 8%,#251b63 35%,transparent 65%);box-shadow:0 0 55px rgba(123,92,255,.35)}.placeholder h3{margin:0 0 6px;font-size:18px}.placeholder p{margin:0;color:#6f778b;font-size:12px}
-.fullscreen .side,.fullscreen .top,.fullscreen .hero,.fullscreen .explore{display:none}.fullscreen .app{padding:0}.fullscreen .main{gap:0}.fullscreen .grid{display:block}.fullscreen .embedCard{height:100%;border-radius:0}.fullscreen .embedHead{height:58px}
-@keyframes gradient{to{background-position:300% center}}@keyframes blink{50%{opacity:0}}@keyframes nebula{to{transform:translate3d(3%, -2%,0) scale(1.08)}}@keyframes drift{to{transform:translate3d(0,-90px,0)}}@keyframes pulse{50%{opacity:.35;transform:scale(.7)}}@keyframes slideIn{from{opacity:0;transform:translateX(-25px)}}@keyframes fadeDown{from{opacity:0;transform:translateY(-15px)}}@keyframes rise{from{opacity:0;transform:translateY(25px) scale(.98)}}@keyframes planet{50%{transform:translateY(18px) rotate(8deg);filter:blur(5px)}}@keyframes float{50%{transform:translateY(-8px)}}
-@media(max-width:850px){.side{width:76px;padding:14px}.brand{font-size:15px;letter-spacing:.1em}.sub,.nav span,.sideBottom{display:none}.nav button{text-align:center}.hero{padding:28px}.grid{grid-template-columns:1fr}.explore{display:none}.hero{flex-basis:32%}.title{font-size:58px}}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit}
+body{position:relative}
+.space{position:fixed;inset:0;overflow:hidden;background:#000}
+.stars,.stars:before,.stars:after{content:"";position:absolute;inset:-35%;background-image:radial-gradient(circle,#fff 0 1px,transparent 1.4px);background-size:97px 97px;opacity:.58;animation:travel 46s linear infinite}
+.stars:before{background-size:157px 157px;opacity:.35;animation-duration:72s;animation-direction:reverse}
+.stars:after{background-size:53px 53px;opacity:.2;animation-duration:29s}
+.vignette{position:absolute;inset:0;background:radial-gradient(circle at center,transparent 35%,#000 100%);pointer-events:none}
+.ui{position:relative;z-index:5;width:100%;height:100%}
+.menu{position:fixed;z-index:20;top:20px;left:20px;width:46px;height:46px;border:1px solid #ffffff1c;border-radius:14px;background:#050505cc;backdrop-filter:blur(18px);display:grid;place-items:center;cursor:pointer;color:#fff;transition:.25s;box-shadow:0 12px 45px #000}
+.menu:hover{background:#111;transform:scale(1.05)}
+.menu svg{width:20px;height:20px}
+.sidebar{position:fixed;z-index:19;top:12px;left:12px;bottom:12px;width:275px;padding:82px 14px 14px;border:1px solid #ffffff16;border-radius:24px;background:#050505e8;backdrop-filter:blur(28px);box-shadow:20px 0 80px #000;transform:translateX(-110%);transition:transform .45s cubic-bezier(.22,.8,.22,1)}
+.sidebar.open{transform:translateX(0)}
+.close{position:absolute;top:20px;right:16px;width:36px;height:36px;border:1px solid #ffffff12;border-radius:11px;background:#fff00000;color:#fff;display:grid;place-items:center;cursor:pointer}
+.brand{position:absolute;left:20px;top:24px;font-size:14px;font-weight:900;letter-spacing:.28em}
+.games{display:grid;gap:7px;overflow:auto;height:100%;padding-right:2px}
+.games::-webkit-scrollbar{width:3px}.games::-webkit-scrollbar-thumb{background:#ffffff20;border-radius:10px}
+.game{width:100%;height:50px;border:1px solid transparent;border-radius:13px;background:#ffffff03;color:#8f8f8f;display:flex;align-items:center;gap:13px;padding:0 13px;cursor:pointer;transition:.22s;text-align:left}
+.game:hover,.game.active{background:#fff0;border-color:#ffffff16;color:#fff;transform:translateX(3px)}
+.game svg{width:19px;height:19px;flex:none;stroke:currentColor}
+.game span{font-size:13px;font-weight:650;letter-spacing:.02em}
+.viewport{position:absolute;inset:0;padding:20px;display:flex;align-items:center;justify-content:center}
+.frame{width:min(1500px,92vw);height:min(860px,88vh);border:1px solid #ffffff12;border-radius:24px;overflow:hidden;background:#000;box-shadow:0 30px 100px #000}
+.frame iframe{width:100%;height:100%;border:0;display:block;background:#000}
+.home{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.home h1{margin:0;font-size:clamp(70px,13vw,190px);font-weight:950;letter-spacing:-.075em;color:#fff;animation:soft 5s ease-in-out infinite}
+.hidden{display:none}
+@keyframes travel{from{transform:translate3d(0,0,0)}to{transform:translate3d(0,180px,0)}}
+@keyframes soft{50%{opacity:.78;transform:scale(1.015)}}
+@media(max-width:650px){.sidebar{width:calc(100% - 24px)}.viewport{padding:10px}.frame{width:100%;height:100%;border-radius:18px}}
 </style>
 </head>
 <body>
-<div class="stars"></div>
-<div class="app" id="app">
-<aside class="side">
-<div class="brand">STELLAR</div><div class="sub">BEYOND THE ORDINARY</div>
-<nav class="nav"><button class="active" onclick="showHome()"><span>HOME</span></button><button onclick="focusEmbed()"><span>EMBED</span></button><button onclick="focusEmbed()"><span>EXPLORE</span></button></nav>
-<div class="sideBottom">SYSTEM ONLINE<div class="status"><i class="dot"></i> STABLE</div></div>
+<div class="space"><div class="stars"></div><div class="vignette"></div></div>
+<div class="ui">
+<button class="menu" id="menu" aria-label="Menu">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+</button>
+<aside class="sidebar" id="sidebar">
+<div class="brand">STELLAR</div>
+<button class="close" id="close" aria-label="Close">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+</button>
+<nav class="games" id="games">
+<button class="game active" data-src="about:blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8 12h8M12 8v8"/></svg><span>Game 1</span></button>
+<button class="game" data-src="about:blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M8 12h8M12 8v8"/></svg><span>Game 2</span></button>
+<button class="game" data-src="about:blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 7h14v10H5z"/><path d="M8 10h3M9.5 8.5v3M15 10h.01M17 12h.01"/></svg><span>Game 3</span></button>
+<button class="game" data-src="about:blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l2.7 5.5L21 9.4l-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.4l6.3-.9L12 3z"/></svg><span>Game 4</span></button>
+<button class="game" data-src="about:blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 5h12v14H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Game 5</span></button>
+<button class="game" data-src="about:blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h16M4 16h16M8 4v16M16 4v16"/></svg><span>Game 6</span></button>
+<button class="game" data-src="about:blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg><span>Game 7</span></button>
+<button class="game" data-src="about:blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 18l6-7 4 4 3-4 3 7H4z"/><circle cx="9" cy="7" r="2"/></svg><span>Game 8</span></button>
+</nav>
 </aside>
-<main class="main">
-<header class="top"><div class="crumb">STELLAR / HOME</div><div class="pill">PARADOX INTERFACE</div></header>
-<section class="content">
-<section class="hero"><div class="heroText"><div class="eyebrow">WELCOME TO THE VOID</div><h1 class="title" id="typing">STELLAR</h1><div class="tag">A cinematic space for games, experiments, and things worth exploring. Everything starts here.</div></div></section>
-<section class="grid">
-<div class="card explore"><h2>Enter the unknown</h2><p class="muted">Use the panel to launch an embedded experience. The player is ready for your game or web app.</p><button class="launch" onclick="focusEmbed()">OPEN EMBED</button></div>
-<div class="card embedCard" id="embedCard"><div class="embedHead"><div class="embedTitle">EMBEDDED EXPERIENCE</div><div class="controls"><button title="Minimize" onclick="minimizeEmbed()">−</button><button title="Fullscreen" onclick="fullscreenEmbed()">⛶</button></div></div><div class="frameWrap"><div class="placeholder" id="placeholder"><div class="placeholderInner"><div class="orb"></div><h3>YOUR EXPERIENCE GOES HERE</h3><p>Replace the iframe source with your game or site.</p></div></div><iframe id="gameFrame" src="about:blank" allowfullscreen></iframe></div></div>
-</section>
-</section>
+<main class="viewport">
+<div class="home" id="home"><h1>STELLAR</h1></div>
+<div class="frame hidden" id="frame"><iframe id="gameFrame" allowfullscreen></iframe></div>
 </main>
 </div>
 <script>
-const app=document.getElementById('app'), embed=document.getElementById('embedCard');
-function fullscreenEmbed(){app.classList.toggle('fullscreen')}
-function minimizeEmbed(){embed.style.display=embed.style.display==='none'?'flex':'none'}
-function focusEmbed(){embed.scrollIntoView({behavior:'smooth',block:'center'});embed.animate([{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:450,easing:'ease-out'})}
-function showHome(){app.classList.remove('fullscreen');embed.style.display='flex';window.scrollTo({top:0,behavior:'smooth'})}
-const title=document.getElementById('typing'), word='STELLAR';let i=0, deleting=false;
-function type(){if(!deleting){i++;title.textContent=word.slice(0,i);if(i===word.length){deleting=true;setTimeout(type,1800);return}}else{i--;title.textContent=word.slice(0,i);if(i===0){deleting=false}}setTimeout(type,deleting?90:150)}
-title.textContent='';type();
+const sidebar=document.getElementById("sidebar"),menu=document.getElementById("menu"),close=document.getElementById("close"),home=document.getElementById("home"),frame=document.getElementById("frame"),gameFrame=document.getElementById("gameFrame");
+menu.onclick=()=>sidebar.classList.add("open");
+close.onclick=()=>sidebar.classList.remove("open");
+document.querySelectorAll(".game").forEach(button=>{
+button.onclick=()=>{
+document.querySelectorAll(".game").forEach(x=>x.classList.remove("active"));
+button.classList.add("active");
+gameFrame.src=button.dataset.src;
+home.classList.add("hidden");
+frame.classList.remove("hidden");
+sidebar.classList.remove("open");
+};
+});
 </script>
 </body>
 </html>
